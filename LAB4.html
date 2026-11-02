@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies Watch List</title>
+    
+    <!-- Load React, ReactDOM, and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .movie-card {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fafafa;
+        }
+
+        .movie-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stars {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .review {
+            color: #555;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .remove-btn {
+            background-color: #f44336;
+            margin-bottom: 0;
+        }
+
+        .remove-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function App() {
+            const [movies, setMovies] = React.useState([]);
+            const [title, setTitle] = React.useState("");
+            const [review, setReview] = React.useState("");
+            const [rating, setRating] = React.useState(1);
+
+            const addMovie = (event) => {
+                event.preventDefault();
+
+                if (title.trim() === "") {
+                    alert("Please enter a movie title!");
+                    return; 
+                }
+
+                const newMovie = {
+                    id: Date.now(),
+                    title: title,
+                    review: review,
+                    rating: Number(rating)
+                };
+
+                setMovies([...movies, newMovie]);
+                setTitle("");
+                setReview("");
+                setRating(1);
+            };
+
+            const removeMovie = (idToRemove) => {
+                const updatedList = movies.filter(movie => movie.id !== idToRemove);
+                setMovies(updatedList);
+            };
+
+            return (
+                <div className="app-container">
+                    <h2>🎬 My Watch List</h2>
+                    
+                    <form onSubmit={addMovie}>
+                        <input 
+                            type="text" 
+                            placeholder="Movie Title" 
+                            value={title} 
+                            onChange={(e) => setTitle(e.target.value)} 
+                        />
+                        
+                        <textarea 
+                            placeholder="What did you think of it?" 
+                            rows="3"
+                            value={review} 
+                            onChange={(e) => setReview(e.target.value)} 
+                        />
+                        
+                        <select value={rating} onChange={(e) => setRating(e.target.value)}>
+                            <option value="1">1 Star</option>
+                            <option value="2">2 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="5">5 Stars</option>
+                        </select>
+                        
+                        <button type="submit">Add Movie</button>
+                    </form>
+
+                    <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+
+                    <div>
+                        {movies.length === 0 ? (
+                            <p className="empty-message">No movies added yet. Add your first one!</p>
+                        ) : (
+                            movies.map((movie) => (
+                                <div key={movie.id} className="movie-card">
+                                    <div className="movie-title">{movie.title}</div>
+                                    <div className="stars">
+                                        {"⭐".repeat(movie.rating)}
+                                    </div>
+                                    <div className="review">"{movie.review}"</div>
+                                    <button 
+                                        className="remove-btn" 
+                                        onClick={() => removeMovie(movie.id)}
+                                    >
+                                        Remove from list
+                                    </button>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
+    </script>
+</body>
+</html>
