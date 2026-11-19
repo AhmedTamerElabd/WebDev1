@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6fa; /* Light blue/gray tint */
+        }
+
+        /* Custom Checkbox Styling to match the image's light purple/grayish look */
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #e6dcf3 0%, #f8f6fb 100%);
+            border: 1px solid #d6cbe8;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), 0 1px 1px rgba(0,0,0,0.05);
+        }
+
+        .custom-checkbox:checked {
+            background: linear-gradient(135deg, #d3c4e8 0%, #e6dcf3 100%);
+        }
+
+        .custom-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid #6b4c9a;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Input editing mode */
+        .edit-input {
+            display: none;
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .edit-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .editing .edit-input {
+            display: block;
+        }
+
+        .editing .todo-text {
+            display: none;
+        }
+        
+        /* Filter Button Active State */
+        .filter-active {
+            background-color: #e0e7ff !important; /* light blue */
+            color: #2563eb !important; /* blue text */
+        }
+        
+        .todo-item {
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-start justify-center pt-16 px-4 sm:px-6">
+
+    <!-- Main Container -->
+    <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-full max-w-4xl p-6 sm:p-8">
+        
+        <!-- Title -->
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Todo App</h1>
+
+        <!-- Input Area -->
+        <div class="flex flex-col sm:flex-row mb-5 space-y-3 sm:space-y-0">
+            <input type="text" id="new-todo" placeholder="What needs doing?" 
+                class="flex-1 border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all text-gray-700 text-base placeholder-gray-400">
+            <button id="add-btn" 
+                class="sm:ml-3 bg-[#4285f4] hover:bg-blue-600 text-white font-medium rounded-lg px-8 py-3 transition-colors duration-200">
+                Add
+            </button>
+        </div>
+
+        <!-- Controls Row -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-4 border-b border-gray-100 space-y-3 sm:space-y-0">
+            <span class="text-gray-400 text-sm">Tip: double-click a todo to edit. Press Enter to save.</span>
+            
+            <div class="flex space-x-1" id="filters">
+                <button data-filter="all" class="filter-btn filter-active px-4 py-1.5 rounded-md text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50">All</button>
+                <button data-filter="active" class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50">Active</button>
+                <button data-filter="completed" class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium transition-colors text-gray-500 hover:bg-gray-50">Completed</button>
+            </div>
+        </div>
+
+        <!-- List Area -->
+        <ul id="todo-list" class="mb-6 min-h-[120px]">
+            <!-- Todo items will be rendered here dynamically -->
+        </ul>
+
+        <!-- Footer Area -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mt-2 pt-4 space-y-4 sm:space-y-0">
+            <span id="todo-count" class="text-gray-500 text-sm">0 items left</span>
+            
+            <div class="flex space-x-2">
+                <button id="clear-completed" class="bg-transparent border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors">
+                    Clear completed
+                </button>
+                <button id="clear-all" class="bg-transparent border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors">
+                    Clear all
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Initial state with items mimicking the provided image
+        let todos = [
+            { id: 1, text: 'See Lecture', completed: false },
+            { id: 2, text: 'Solve assignment', completed: false }
+        ];
+        let currentFilter = 'all';
+
+        // DOM Elements
+        const todoInput = document.getElementById('new-todo');
+        const addBtn = document.getElementById('add-btn');
+        const todoList = document.getElementById('todo-list');
+        const todoCount = document.getElementById('todo-count');
+        const clearCompletedBtn = document.getElementById('clear-completed');
+        const clearAllBtn = document.getElementById('clear-all');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // SVG Trash Icon Template
+        const trashIcon = `
+            <svg class="w-5 h-5 text-gray-300 hover:text-red-500 transition-colors cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+        `;
+
+        // Render functions
+        function render() {
+            // Filter logic
+            let filteredTodos = todos;
+            if (currentFilter === 'active') {
+                filteredTodos = todos.filter(t => !t.completed);
+            } else if (currentFilter === 'completed') {
+                filteredTodos = todos.filter(t => t.completed);
+            }
+
+            // Clear list
+            todoList.innerHTML = '';
+
+            // Create list items
+            filteredTodos.forEach(todo => {
+                const li = document.createElement('li');
+                li.className = 'todo-item group flex items-center justify-between py-4 px-2';
+                li.dataset.id = todo.id;
+
+                // Left side: Checkbox + Text
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'flex items-center flex-1 min-w-0';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'custom-checkbox mr-4';
+                checkbox.checked = todo.completed;
+                checkbox.addEventListener('change', () => toggleTodo(todo.id));
+
+                const span = document.createElement('span');
+                span.className = `todo-text flex-1 truncate text-gray-800 cursor-text ${todo.completed ? 'line-through text-gray-400' : ''}`;
+                span.textContent = todo.text;
+                span.addEventListener('dblclick', () => enterEditMode(li, span, todo));
+
+                const editInput = document.createElement('input');
+                editInput.type = 'text';
+                editInput.className = 'edit-input';
+                editInput.value = todo.text;
+                
+                editInput.addEventListener('blur', () => saveEdit(todo.id, editInput.value, li));
+                editInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') saveEdit(todo.id, editInput.value, li);
+                    if (e.key === 'Escape') cancelEdit(li);
+                });
+
+                leftDiv.appendChild(checkbox);
+                leftDiv.appendChild(span);
+                leftDiv.appendChild(editInput);
+
+                // Right side: Delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'ml-4 opacity-50 group-hover:opacity-100 transition-opacity focus:outline-none';
+                deleteBtn.innerHTML = trashIcon;
+                deleteBtn.addEventListener('click', () => deleteTodo(todo.id));
+
+                li.appendChild(leftDiv);
+                li.appendChild(deleteBtn);
+                todoList.appendChild(li);
+            });
+
+            // Update Counter
+            const activeCount = todos.filter(t => !t.completed).length;
+            todoCount.textContent = `${activeCount} item${activeCount !== 1 ? 's' : ''} left`;
+        }
+
+        // Actions
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (text) {
+                todos.push({
+                    id: Date.now(),
+                    text: text,
+                    completed: false
+                });
+                todoInput.value = '';
+                render();
+            }
+        }
+
+        function toggleTodo(id) {
+            todos = todos.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+            render();
+        }
+
+        function deleteTodo(id) {
+            todos = todos.filter(t => t.id !== id);
+            render();
+        }
+
+        function enterEditMode(li, span, todo) {
+            li.classList.add('editing');
+            const input = li.querySelector('.edit-input');
+            input.value = todo.text; // reset value in case it was partially edited
+            input.focus();
+            
+            // Move cursor to the end
+            input.setSelectionRange(input.value.length, input.value.length);
+        }
+
+        function saveEdit(id, newText, li) {
+            const trimmedText = newText.trim();
+            if (trimmedText) {
+                todos = todos.map(t => t.id === id ? { ...t, text: trimmedText } : t);
+            } else {
+                // If empty, delete the todo
+                deleteTodo(id);
+                return;
+            }
+            li.classList.remove('editing');
+            render();
+        }
+
+        function cancelEdit(li) {
+            li.classList.remove('editing');
+        }
+
+        // Event Listeners
+        addBtn.addEventListener('click', addTodo);
+        
+        todoInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        clearCompletedBtn.addEventListener('click', () => {
+            todos = todos.filter(t => !t.completed);
+            render();
+        });
+
+        clearAllBtn.addEventListener('click', () => {
+            todos = [];
+            render();
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update active button styling
+                filterBtns.forEach(b => b.classList.remove('filter-active', 'bg-[#e0e7ff]', 'text-[#2563eb]'));
+                e.target.classList.add('filter-active');
+                
+                // Update filter state and render
+                currentFilter = e.target.dataset.filter;
+                render();
+            });
+        });
+
+        // Initial render
+        render();
+
+    </script>
+</body>
+</html>
