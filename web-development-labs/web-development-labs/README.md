@@ -64,7 +64,6 @@ For the repository landing page, select the `main` branch and `/ (root)` folder.
 
 **Ahmed Tamer**
 
-- GitHub: [@Ahmedtamerr505](https://github.com/Ahmedtamerr505)
 - LinkedIn: [Ahmed Tamer](https://www.linkedin.com/in/ahmed-tamer-ata)
 
 ---
