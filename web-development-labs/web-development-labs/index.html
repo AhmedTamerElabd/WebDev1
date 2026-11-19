@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d18">
+  <meta name="description" content="A collection of web development labs by Ahmed Tamer.">
+  <title>Web Development Labs | Ahmed Tamer</title>
+  <style>
+    :root { color-scheme: dark; --bg:#090d18; --panel:#111a2b; --muted:#9aa8bd; --text:#f4f7fb; --accent:#8b9cff; --line:rgba(255,255,255,.1); }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--text); background:radial-gradient(ellipse at 15% 0%,#1d2a53 0,transparent 38%),radial-gradient(ellipse at 90% 25%,#173d42 0,transparent 30%),var(--bg); }
+    .wrap { width:min(1060px,calc(100% - 40px)); margin:auto; }
+    header { padding:26px 0; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); }
+    .brand { font-weight:750; letter-spacing:-.04em; }
+    .tag { color:var(--muted); font-size:.88rem; }
+    main { padding:90px 0 70px; }
+    .eyebrow { color:#b6c0ff; font-size:.78rem; text-transform:uppercase; letter-spacing:.18em; font-weight:700; }
+    h1 { max-width:760px; margin:18px 0; font-size:clamp(2.7rem,7vw,5.4rem); line-height:.99; letter-spacing:-.07em; }
+    h1 span { color:var(--accent); }
+    .intro { max-width:620px; color:var(--muted); font-size:1.08rem; line-height:1.8; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:54px; }
+    .card { display:flex; flex-direction:column; min-height:260px; padding:28px; border:1px solid var(--line); border-radius:22px; background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025)); text-decoration:none; color:inherit; transition:transform .2s,border-color .2s,background .2s; }
+    .card:hover { transform:translateY(-5px); border-color:rgba(139,156,255,.65); background:rgba(255,255,255,.08); }
+    .number { color:#aab6ff; font-size:.8rem; letter-spacing:.12em; font-weight:750; }
+    h2 { margin:28px 0 10px; font-size:1.5rem; letter-spacing:-.04em; }
+    .desc { color:var(--muted); line-height:1.7; }
+    .bottom { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:28px; color:#c5ceff; font-weight:650; }
+    .stack { color:var(--muted); font-size:.82rem; font-weight:500; }
+    footer { border-top:1px solid var(--line); padding:24px 0 34px; color:var(--muted); font-size:.88rem; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    footer a { color:#c5ceff; text-decoration:none; }
+    @media(max-width:680px) { main{padding:65px 0 50px}.grid{grid-template-columns:1fr}.card{min-height:230px} header{gap:10px;align-items:flex-start;flex-direction:column} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">AT<span style="color:#8b9cff">.</span> / WEB LABS</div>
+      <div class="tag">A learning journey in code</div>
+    </header>
+    <main>
+      <div class="eyebrow">Selected coursework · 2026</div>
+      <h1>Building things<br>for the <span>web.</span></h1>
+      <p class="intro">A small collection of practical projects exploring web fundamentals, interface design, and interactive behavior — built with HTML, CSS, and JavaScript.</p>
+      <section class="grid" aria-label="Projects">
+        <a class="card" href="projects/personal-portfolio/">
+          <div class="number">01 / PERSONAL WEBSITE</div>
+          <h2>Personal Portfolio</h2>
+          <div class="desc">A responsive personal space to introduce my background, highlight skills and projects, and share contact information.</div>
+          <div class="bottom"><span>Explore project ↗</span><span class="stack">HTML · CSS</span></div>
+        </a>
+        <a class="card" href="projects/greeting-app/">
+          <div class="number">02 / JAVASCRIPT BASICS</div>
+          <h2>Greeting App</h2>
+          <div class="desc">A lightweight interactive app that creates greeting messages and changes them into goodbye messages with a click.</div>
+          <div class="bottom"><span>Explore project ↗</span><span class="stack">HTML · CSS · JS</span></div>
+        </a>
+      </section>
+    </main>
+    <footer>
+      <span>Designed & built by Ahmed Tamer</span>
+      <span><a href="https://github.com/Ahmedtamerr505">GitHub</a> · <a href="https://www.linkedin.com/in/ahmed-tamer-ata">LinkedIn</a></span>
+    </footer>
+  </div>
+</body>
+</html>

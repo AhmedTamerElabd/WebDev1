@@ -3,193 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movies Watch List</title>
-    
-    <!-- Load React, ReactDOM, and Babel -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
+    <title>Todo App</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-        
-        .app-container {
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        h2 {
-            text-align: center;
+
+        body {
+            background-color: #f1f4f9;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
             color: #333;
         }
 
-        input, textarea, select, button {
+        .container {
+            background-color: #ffffff;
             width: 100%;
-            margin-bottom: 15px;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
+            max-width: 700px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
         }
 
-        button {
-            background-color: #4CAF50;
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            font-size: 16px;
+            color: #4a4a5a;
+            outline: none;
+        }
+
+        .btn-add {
+            background-color: #4285f4;
             color: white;
             border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .movie-card {
-            border: 1px solid #eee;
             border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: #fafafa;
+            padding: 0 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .movie-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 5px;
+        .controls {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
         }
 
-        .stars {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .filters {
+            display: flex;
+            gap: 10px;
         }
 
-        .review {
-            color: #555;
-            font-style: italic;
-            margin-bottom: 15px;
+        .filter-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
         }
 
-        .remove-btn {
-            background-color: #f44336;
-            margin-bottom: 0;
+        .filter-btn.active {
+            background-color: #e8f0fe;
+            color: #4285f4;
         }
 
-        .remove-btn:hover {
-            background-color: #d32f2f;
+        .todo-list {
+            list-style: none;
+            border-top: 1px solid #f1f3f5;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .checkbox-container {
+            position: relative;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+        }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            border-radius: 4px;
+        }
+
+        .checkbox-container input:checked ~ .checkmark:after {
+            content: "";
+            position: absolute;
+            display: block;
+            left: 7px;
+            top: 3px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 16px;
+            color: #2c3e50;
         }
         
-        .empty-message {
-            text-align: center;
-            color: #777;
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #a0a4b0;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #b0b4c0;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .btn-delete:hover {
+            color: #ff4757;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .footer-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-btns button {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #6b7280;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div id="root"></div>
+<div class="container">
+    <h1>Todo App</h1>
+    
+    <div class="input-group">
+        <input type="text" id="todoInput" placeholder="What needs doing?">
+        <button class="btn-add" onclick="addTodo()">Add</button>
+    </div>
 
-    <script type="text/babel">
-        function App() {
-            const [movies, setMovies] = React.useState([]);
-            const [title, setTitle] = React.useState("");
-            const [review, setReview] = React.useState("");
-            const [rating, setRating] = React.useState(1);
+    <div class="controls">
+        <div class="filters">
+            <button class="filter-btn active" id="btnAll" onclick="setFilter('all')">All</button>
+            <button class="filter-btn" id="btnActive" onclick="setFilter('active')">Active</button>
+            <button class="filter-btn" id="btnCompleted" onclick="setFilter('completed')">Completed</button>
+        </div>
+    </div>
 
-            const addMovie = (event) => {
-                event.preventDefault();
+    <ul class="todo-list" id="todoList"></ul>
 
-                if (title.trim() === "") {
-                    alert("Please enter a movie title!");
-                    return; 
-                }
+    <div class="footer">
+        <span id="itemsLeft">0 items left</span>
+        <div class="footer-btns">
+            <button onclick="clearCompleted()">Clear completed</button>
+            <button onclick="clearAll()">Clear all</button>
+        </div>
+    </div>
+</div>
 
-                const newMovie = {
-                    id: Date.now(),
-                    title: title,
-                    review: review,
-                    rating: Number(rating)
-                };
+<script>
+    let todos = [
+        { id: 1, text: "See Lecture", completed: false },
+        { id: 2, text: "Solve assignment", completed: false }
+    ];
+    let currentFilter = 'all';
 
-                setMovies([...movies, newMovie]);
-                setTitle("");
-                setReview("");
-                setRating(1);
-            };
 
-            const removeMovie = (idToRemove) => {
-                const updatedList = movies.filter(movie => movie.id !== idToRemove);
-                setMovies(updatedList);
-            };
+    function renderTodos() {
+        const todoList = document.getElementById('todoList');
+        todoList.innerHTML = '';
 
-            return (
-                <div className="app-container">
-                    <h2>🎬 My Watch List</h2>
-                    
-                    <form onSubmit={addMovie}>
-                        <input 
-                            type="text" 
-                            placeholder="Movie Title" 
-                            value={title} 
-                            onChange={(e) => setTitle(e.target.value)} 
-                        />
-                        
-                        <textarea 
-                            placeholder="What did you think of it?" 
-                            rows="3"
-                            value={review} 
-                            onChange={(e) => setReview(e.target.value)} 
-                        />
-                        
-                        <select value={rating} onChange={(e) => setRating(e.target.value)}>
-                            <option value="1">1 Star</option>
-                            <option value="2">2 Stars</option>
-                            <option value="3">3 Stars</option>
-                            <option value="4">4 Stars</option>
-                            <option value="5">5 Stars</option>
-                        </select>
-                        
-                        <button type="submit">Add Movie</button>
-                    </form>
+        let activeCount = 0;
 
-                    <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+        for (let i = 0; i < todos.length; i++) {
+            let todo = todos[i];
 
-                    <div>
-                        {movies.length === 0 ? (
-                            <p className="empty-message">No movies added yet. Add your first one!</p>
-                        ) : (
-                            movies.map((movie) => (
-                                <div key={movie.id} className="movie-card">
-                                    <div className="movie-title">{movie.title}</div>
-                                    <div className="stars">
-                                        {"⭐".repeat(movie.rating)}
-                                    </div>
-                                    <div className="review">"{movie.review}"</div>
-                                    <button 
-                                        className="remove-btn" 
-                                        onClick={() => removeMovie(movie.id)}
-                                    >
-                                        Remove from list
-                                    </button>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            );
+            //LSA M5LSHTSH
+            if (todo.completed === false) {
+                activeCount = activeCount + 1;
+            }
+
+            if (currentFilter === 'active' && todo.completed === true) {
+                continue; // تخطى المهمة المكتملة
+            }
+            if (currentFilter === 'completed' && todo.completed === false) {
+                continue; // تخطى المهمة النشطة
+            }
+
+            let isChecked = '';
+            let itemClass = 'todo-item';
+            
+            if (todo.completed === true) {
+                isChecked = 'checked';
+                itemClass = 'todo-item completed';
+            }
+
+            todoList.innerHTML += `
+                <li class="${itemClass}">
+                    <label class="checkbox-container">
+                        <input type="checkbox" ${isChecked} onclick="toggleTodo(${todo.id})">
+                        <span class="checkmark"></span>
+                    </label>
+                    <span class="todo-text">${todo.text}</span>
+                    <button class="btn-delete" onclick="deleteTodo(${todo.id})">✖</button>
+                </li>
+           `;
         }
 
-        const root = ReactDOM.createRoot(document.getElementById("root"));
-        root.render(<App />);
-    </script>
+        document.getElementById('itemsLeft').textContent = activeCount + ' items left';
+    }
+
+    function addTodo() {
+        const input = document.getElementById('todoInput');
+        let text = input.value;
+
+        if (text !== '') {
+            let newTodo = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+            todos.push(newTodo);
+            input.value = ''; 
+            renderTodos();
+        }
+    }
+
+    function toggleTodo(id) {
+        for (let i = 0; i < todos.length; i++) {
+            if (todos[i].id === id) {
+                todos[i].completed = !todos[i].completed;
+            }
+        }
+        renderTodos();
+    }
+
+    function deleteTodo(id) {
+        let newTodos = [];
+        for (let i = 0; i < todos.length; i++) {
+            if (todos[i].id !== id) {
+                newTodos.push(todos[i]);
+            }
+        }
+        todos = newTodos;
+        renderTodos();
+    }
+
+    function setFilter(filter) {
+        currentFilter = filter;
+        
+        document.getElementById('btnAll').className = 'filter-btn';
+        document.getElementById('btnActive').className = 'filter-btn';
+        document.getElementById('btnCompleted').className = 'filter-btn';
+
+        if (filter === 'all') document.getElementById('btnAll').className = 'filter-btn active';
+        if (filter === 'active') document.getElementById('btnActive').className = 'filter-btn active';
+        if (filter === 'completed') document.getElementById('btnCompleted').className = 'filter-btn active';
+
+        renderTodos();
+    }
+
+    function clearCompleted() {
+        let newTodos = [];
+        for (let i = 0; i < todos.length; i++) {
+            if (todos[i].completed === false) {
+                newTodos.push(todos[i]);
+            }
+        }
+        todos = newTodos;
+        renderTodos();
+    }
+
+    function clearAll() {
+        todos = [];
+        renderTodos();
+    }
+
+    renderTodos();
+</script>
 </body>
 </html>

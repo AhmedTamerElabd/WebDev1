@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies Watch List - Simple React</title>
+
+    <!-- React and Babel Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .movie-card {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fafafa;
+        }
+
+        .movie-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stars {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .review {
+            color: #555;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .remove-btn {
+            background-color: #f44336;
+            margin-bottom: 0;
+        }
+
+        .remove-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Only import useState (no useEffect or advanced hooks)
+        const { useState } = React;
+
+        function MovieWatchList() {
+            // State for the list of movies (starts empty)
+            const [moviesList, setMoviesList] = useState([]);
+
+            // State for form inputs
+            const [titleInput, setTitleInput] = useState("");
+            const [reviewInput, setReviewInput] = useState("");
+            const [ratingInput, setRatingInput] = useState("1");
+
+            // Function to add a new movie
+            function handleSubmit(event) {
+                event.preventDefault();
+
+                // Simple validation check
+                if (titleInput === "") {
+                    alert("Please enter a movie title!");
+                    return;
+                }
+
+                // Create movie object
+                let newMovie = {
+                    id: Date.now(),
+                    title: titleInput,
+                    review: reviewInput,
+                    rating: parseInt(ratingInput)
+                };
+
+                // Add to array using spread operator
+                setMoviesList([...moviesList, newMovie]);
+
+                // Clear input boxes
+                setTitleInput("");
+                setReviewInput("");
+                setRatingInput("1");
+            }
+
+            // Function to remove a movie using a basic for loop and if statement
+            function handleRemove(idToRemove) {
+                let updatedList = [];
+
+                for (let i = 0; i < moviesList.length; i++) {
+                    if (moviesList[i].id !== idToRemove) {
+                        updatedList.push(moviesList[i]);
+                    }
+                }
+
+                setMoviesList(updatedList);
+            }
+
+            // Helper function to build star emojis using a basic for loop
+            function makeStars(ratingNumber) {
+                let starText = "";
+                for (let s = 0; s < ratingNumber; s++) {
+                    starText = starText + "⭐";
+                }
+                return starText;
+            }
+
+            // Helper function to display the list of movies
+            function renderMovieList() {
+                // If list is empty, show empty message
+                if (moviesList.length === 0) {
+                    return <p className="empty-message">No movies added yet. Add your first one!</p>;
+                }
+
+                // Loop through movies array and build cards
+                let cards = [];
+                for (let i = 0; i < moviesList.length; i++) {
+                    let movie = moviesList[i];
+
+                    cards.push(
+                        <div key={movie.id} className="movie-card">
+                            <div className="movie-title">{movie.title}</div>
+                            <div className="stars">{makeStars(movie.rating)}</div>
+                            <div className="review">"{movie.review}"</div>
+                            <button className="remove-btn" onClick={() => handleRemove(movie.id)}>
+                                Remove from list
+                            </button>
+                        </div>
+                    );
+                }
+
+                return cards;
+            }
+
+            return (
+                <div className="app-container">
+                    <h2>🎬 My Watch List</h2>
+
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            placeholder="Movie Title"
+                            value={titleInput}
+                            onChange={(e) => setTitleInput(e.target.value)}
+                        />
+
+                        <textarea
+                            placeholder="What did you think of it?"
+                            rows="3"
+                            value={reviewInput}
+                            onChange={(e) => setReviewInput(e.target.value)}
+                        ></textarea>
+
+                        <select
+                            value={ratingInput}
+                            onChange={(e) => setRatingInput(e.target.value)}
+                        >
+                            <option value="1">1 Star</option>
+                            <option value="2">2 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="5">5 Stars</option>
+                        </select>
+
+                        <button type="submit">Add Movie</button>
+                    </form>
+
+                    <hr style={{ margin: "20px 0", border: "none", borderTop: "1px solid #ddd" }} />
+
+                    <div id="moviesContainer">
+                        {renderMovieList()}
+                    </div>
+                </div>
+            );
+        }
+
+        // Render React Component
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<MovieWatchList />);
+    </script>
+</body>
+</html>
