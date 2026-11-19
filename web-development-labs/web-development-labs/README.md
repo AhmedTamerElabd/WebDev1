@@ -20,8 +20,8 @@
 |:--:|---|---|:--:|
 | 01 | **Personal Portfolio** | A personal website featuring an introduction, skills, selected projects, and contact details. | [Open](projects/personal-portfolio/) |
 | 02 | **Greeting App** | Enter a name to create a greeting. Click the greeting to turn it into a goodbye message; click again to remove it. | [Open](projects/greeting-app/) |
-| 03 | **To-Do list** | Enter a task manage the finished ones and the new ones. | [Open](web-development-labs/web-development-labs/projects/To-Do/LAB3.html) |
-| 03 | **Movie List** | Enter a movie manage the list and rate with stateful memory. | [Open](web-development-labs/web-development-labs/projects/MovieList/LAB5.html) |
+| 03 | **To-Do list** | Enter a task manage the finished ones and the new ones. | [Open](projects/To-Do/LAB3.html) |
+| 03 | **Movie List** | Enter a movie manage the list and rate with stateful memory. | [Open](projects/MovieList/LAB5.html) |
 
 
 
